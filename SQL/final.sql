@@ -137,12 +137,23 @@ call AddCustomer('HEHE');
 select * from customer;
 
 -- 6 -----------------------
+
 delimiter //
 create procedure DeleteCustomer(in p_customer_id int)
 begin
+	declare exit handler for sqlexception
+	begin
+		rollback;
+		resignal;
+	end;
+	start transaction;
+	-- 1. Xoá lineitem (con của orders)
 	delete from lineitem where order_id in (select order_id from orders where customer_id = p_customer_id);
-    delete from orders where customer_id = p_customer_id;
-    delete from customer where customer_id = p_customer_id;
+	-- 2. Xoá orders (con của customer)
+	delete from orders where customer_id = p_customer_id;
+	-- 3. Xoá customer
+	delete from customer where customer_id = p_customer_id;
+	commit;
 end //
 delimiter ;
 
