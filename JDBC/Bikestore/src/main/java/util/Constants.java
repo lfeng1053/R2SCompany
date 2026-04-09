@@ -7,5 +7,6 @@ public class Constants {
             "%-10s | %-20s | %-15s | %-30s | %-15s | %-10s",
             "Staff ID", "Name", "Role", "Email", "Phone", "Store ID"
     );
+    public static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-z]{2,6}$";
     public static final String STAFF_ROW_FORMAT = "%-10d | %-20s | %-15s | %-30s | %-15s | %-10d%n";
 }

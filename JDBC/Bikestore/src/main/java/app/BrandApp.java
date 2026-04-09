@@ -1,18 +1,20 @@
 package app;
 
-import dao.BrandDAO;
 import dao.BrandDAOImpl;
-import entity.Brand;
+import dto.BrandDTO;
 import exception.DAOException;
 import exception.GlobalExceptionHandler;
 import form.BrandForm;
+import mapper.BrandMapper;
+import services.BrandService;
 import util.Constants;
+
 import java.util.List;
 import java.util.Scanner;
 
 public class BrandApp {
     public static void run() {
-        BrandDAO brandDAO = new BrandDAOImpl();
+        BrandService brandService = new BrandService(new BrandDAOImpl());
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -37,18 +39,22 @@ public class BrandApp {
             try {
                 switch (choice) {
                     case 1 -> {
-                        List<Brand> brands = brandDAO.findAll();
+                        List<BrandDTO> brands = brandService.findAll();
                         System.out.println(Constants.BRAND_HEADER);
-                        for (Brand b : brands) {
+                        for (BrandDTO b : brands) {
                             System.out.printf(Constants.BRAND_ROW_FORMAT + "%n", b.getBrandId(), b.getBrandName());
                         }
                     }
-                    case 2 -> brandDAO.insert(BrandForm.inputNewBrand());
-                    case 3 -> brandDAO.update(BrandForm.inputUpdateBrand());
-                    case 4 -> brandDAO.delete(BrandForm.inputBrandId("delete"));
+                    case 2 -> brandService.insert(BrandMapper.toDto(BrandForm.inputNewBrand()));
+                    case 3 -> brandService.update(BrandMapper.toDto(BrandForm.inputUpdateBrand()));
+                    case 4 -> brandService.delete(BrandForm.inputBrandId("delete"));
                     case 5 -> {
-                        Brand brand = brandDAO.findById(BrandForm.inputBrandId("find"));
-                        System.out.println(brand != null ? brand : "Brand not found");
+                        BrandDTO dto = brandService.findById(BrandForm.inputBrandId("find"));
+                        if (dto == null) {
+                            System.out.println("Brand not found");
+                        } else {
+                            System.out.printf(Constants.BRAND_ROW_FORMAT + "%n", dto.getBrandId(), dto.getBrandName());
+                        }
                     }
                     case 0 -> {
                         System.out.println("Goodbye!");

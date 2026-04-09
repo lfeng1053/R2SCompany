@@ -51,8 +51,10 @@ public class DashboardUI {
         BrandApp.run();
     }
 
+
     private void handleStaff() {
         System.out.println("\nNavigating to Staff Module...");
+        StaffApp.run();
     }
 
     private void handleStore() {
